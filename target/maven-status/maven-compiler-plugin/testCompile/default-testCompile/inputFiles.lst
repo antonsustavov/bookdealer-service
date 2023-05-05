@@ -1,0 +1,9 @@
+/Users/sustav/book-service/src/test/java/com/sustavov/bookdealer/jpa/AuthorJpaTest.java
+/Users/sustav/book-service/src/test/java/com/sustavov/bookdealer/jpa/BookJpaTest.java
+/Users/sustav/book-service/src/test/java/com/sustavov/bookdealer/integration/SecuredControllerIntegrationTest.java
+/Users/sustav/book-service/src/test/java/com/sustavov/bookdealer/integration/ControllerIntegrationTest.java
+/Users/sustav/book-service/src/test/java/com/sustavov/bookdealer/integration/BaseIntegrationTest.java
+/Users/sustav/book-service/src/test/java/com/sustavov/bookdealer/BookDealerApplicationTests.java
+/Users/sustav/book-service/src/test/java/com/sustavov/bookdealer/functional/SwaggerTest.java
+/Users/sustav/book-service/src/test/java/com/sustavov/bookdealer/functional/HealthCheckTest.java
+/Users/sustav/book-service/src/test/java/com/sustavov/bookdealer/functional/BaseFunctionalTest.java

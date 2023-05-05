@@ -1,0 +1,19 @@
+[source,json,options="nowrap"]
+----
+{
+  "firstName" : "Ranga",
+  "lastName" : "Karanam",
+  "dateOfBirth" : "1990-01-03",
+  "books" : [ {
+    "title" : "Spring Master Class — Beginner to Expertg",
+    "isbn" : "978-3-16-148610-0",
+    "publicationDate" : "2010-03-05",
+    "price" : 123.34
+  }, {
+    "title" : "Hibernate Master Class — Beginner to Expertg",
+    "isbn" : "888-3-16-148410-1",
+    "publicationDate" : "1951-03-05",
+    "price" : 188.14
+  } ]
+}
+----

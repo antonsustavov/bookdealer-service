@@ -1,0 +1,13 @@
+package com.sustavov.bookdealer.configuration;
+
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@OpenAPIDefinition(info = @Info(
+        title = "Book Dealer Service",
+        description = "Book Store",
+        version = "v1"))
+public class SwaggerConfiguration {
+}

@@ -1,0 +1,9 @@
+com/sustavov/bookdealer/jpa/BookJpaTest.class
+com/sustavov/bookdealer/functional/HealthCheckTest.class
+com/sustavov/bookdealer/jpa/AuthorJpaTest.class
+com/sustavov/bookdealer/functional/BaseFunctionalTest.class
+com/sustavov/bookdealer/functional/SwaggerTest.class
+com/sustavov/bookdealer/BookDealerApplicationTests.class
+com/sustavov/bookdealer/integration/SecuredControllerIntegrationTest.class
+com/sustavov/bookdealer/integration/BaseIntegrationTest.class
+com/sustavov/bookdealer/integration/ControllerIntegrationTest.class

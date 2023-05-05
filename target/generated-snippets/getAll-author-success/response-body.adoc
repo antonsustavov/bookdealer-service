@@ -1,0 +1,22 @@
+[source,json,options="nowrap"]
+----
+[ {
+  "id" : 1,
+  "firstName" : "John",
+  "lastName" : "Tolkien",
+  "dateOfBirth" : "1892-01-02",
+  "books" : [ {
+    "id" : 2,
+    "title" : "The Fellowship of the Ring",
+    "isbn" : "978-3-16-148410-0",
+    "publicationDate" : "1950-03-05",
+    "price" : 123.34
+  }, {
+    "id" : 1,
+    "title" : "The Return of the King",
+    "isbn" : "978-3-16-148410-1",
+    "publicationDate" : "1951-03-05",
+    "price" : 188.14
+  } ]
+} ]
+----

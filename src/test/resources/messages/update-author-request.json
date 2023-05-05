@@ -1,0 +1,22 @@
+{
+  "id": 1,
+  "firstName" : "Alexandre",
+  "lastName" : "Dumas",
+  "dateOfBirth" : "1802-07-24",
+  "books": [
+    {
+      "id": 1,
+      "title": "The Count of Monte Cristo",
+      "isbn": "978-3-16-148410-3",
+      "publicationDate": "1842-03-05",
+      "price": 1245.67
+    },
+    {
+      "id": 2,
+      "title": "The Corsican Brothers",
+      "isbn": "978-3-16-148410-3",
+      "publicationDate": "1844-03-05",
+      "price": 234.67
+    }
+  ]
+}
