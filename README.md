@@ -1,7 +1,6 @@
 ## Book Dealer Service
 
-1. I didn't create unit test due to simple logic.
-2. Created functional and integration tests.
+Created unit, functional and integration tests.
 
 ### docker files
 1. Dockerfile-amd64 - for ARM
