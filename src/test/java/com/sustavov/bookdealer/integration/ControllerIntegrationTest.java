@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("Client API - Integration Tests")
+@DisplayName("Client API - Controller Integration Tests")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ControllerIntegrationTest extends BaseIntegrationTest {
 
@@ -95,13 +95,6 @@ public class ControllerIntegrationTest extends BaseIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
                         .content(requestAuthorString))
                 .andExpect(status().isNoContent());
-
-//        mvc.perform(delete("/api/v1/authors/{id}", 2L)
-//                        .with(user("username").password("password").roles("ADMIN"))
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-//                        .content(requestAuthorString))
-//                .andExpect(status().isNoContent());
 
         mvc.perform(get("/api/v1/authors")
                         .with(user("username").password("password").roles("ADMIN"))

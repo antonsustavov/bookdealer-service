@@ -5,13 +5,11 @@ import com.sustavov.bookdealer.model.User;
 import com.sustavov.bookdealer.model.request.AuthorRequest;
 import com.sustavov.bookdealer.security.UserDetailsDefault;
 import com.sustavov.bookdealer.security.UserRole;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -20,87 +18,71 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("Client API - Security Integration Tests")
 public class SecuredControllerIntegrationTest extends BaseIntegrationTest {
 
     @Test
-    @WithMockUser("user")
-    public void givenAuthRequestOnSaveMethodUser_shouldFailedWith500() throws Exception {
-
+    public void givenAuthRequestOnSaveMethodUser_shouldFailedWith401() throws Exception {
         AuthorRequest authorRequest = createAuthorRequest();
 
         mvc.perform(post("/api/v1/authors")
                         .content(objectMapper.writeValueAsString(authorRequest))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    @WithMockUser("admin")
     public void givenAuthRequestOnSaveMethodAdmin_shouldSucceedWith201() throws Exception {
-
         AuthorRequest authorRequest = createAuthorRequest();
-
-        Role role = Role.builder()
-                .name(UserRole.ROLE_ADMIN)
-                .build();
-        Role savedRole = roleRepository.save(role);
-
-        User savedUser = userRepository.save(User.builder()
-                .username("username")
-                .email("username@gm.com")
-                .password(encoder.encode("password"))
-                .roles(Set.of(savedRole))
-                .build());
-
-        Authentication authenticate = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken("username", "password"));
-        UserDetailsDefault userDetails = (UserDetailsDefault) authenticate.getPrincipal();
-        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+        User roleAdmin = setupUserRole(UserRole.ROLE_ADMIN, "admin", "admin@gmail.com", "password");
+        UserDetailsDefault userDetails = setupUserDetails(roleAdmin.getUsername(), "password");
 
         mvc.perform(post("/api/v1/authors")
                         .with(user(userDetails))
-                        .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                         .content(objectMapper.writeValueAsString(authorRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
     }
 
     @Test
-    @WithMockUser("user")
     public void givenAuthRequestOnSaveMethodUser_shouldFailedWith403() throws Exception {
         AuthorRequest authorRequest = createAuthorRequest();
-
-        Role role = Role.builder()
-                .name(UserRole.ROLE_USER)
-                .build();
-        Role savedRole = roleRepository.save(role);
-
-        User savedUser = userRepository.save(User.builder()
-                .username("username_3")
-                .email("username_3@gm.com")
-                .password(encoder.encode("password"))
-                .roles(Set.of(savedRole))
-                .build());
-
-        Authentication authenticate = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken("username_3", "password"));
-        UserDetailsDefault userDetails = (UserDetailsDefault) authenticate.getPrincipal();
-        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+        User roleUser = setupUserRole(UserRole.ROLE_USER, "user", "user@gmail.com", "password");
+        UserDetailsDefault userDetails = setupUserDetails(roleUser.getUsername(), "password");
 
         mvc.perform(post("/api/v1/authors")
                         .with(user(userDetails))
-                        .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                         .content(objectMapper.writeValueAsString(authorRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
 
     private AuthorRequest createAuthorRequest() {
-        AuthorRequest authorRequest = new AuthorRequest();
-        authorRequest.setFirstName("adminUser");
-        authorRequest.setLastName("adminUser");
-        authorRequest.setDateOfBirth(LocalDate.of(2021, 3, 2));
+        return AuthorRequest.builder()
+                .firstName("adminUser")
+                .lastName("adminUser")
+                .dateOfBirth(LocalDate.of(2021, 3, 2))
+                .build();
+    }
 
-        return authorRequest;
+    private User setupUserRole(UserRole userRole, String username, String email, String password) {
+        Role role = Role.builder()
+                .name(userRole)
+                .build();
+        Role savedRole = roleRepository.save(role);
+
+        return userRepository.save(User.builder()
+                .username(username)
+                .email(email)
+                .password(encoder.encode(password))
+                .roles(Set.of(savedRole))
+                .build());
+    }
+
+    private UserDetailsDefault setupUserDetails(String username, String password) {
+        Authentication authenticate = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(username, password));
+
+        return (UserDetailsDefault) authenticate.getPrincipal();
     }
 }

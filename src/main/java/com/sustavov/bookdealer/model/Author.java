@@ -8,11 +8,29 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
+import org.hibernate.Hibernate;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+
+@Getter
+@Setter
+@ToString
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 
 @Entity
 @Table(name = "authors")
@@ -24,40 +42,11 @@ public class Author implements Serializable {
     String firstName;
     String lastName;
     LocalDate dateOfBirth;
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    Set<Book> books = new HashSet<>();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
+    @ToString.Exclude
+    private Set<Book> books = new HashSet<>();
 
     public Set<Book> getBooks() {
         return books;
@@ -69,5 +58,18 @@ public class Author implements Serializable {
         for(Book b : books) {
             b.setAuthor(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Author author = (Author) o;
+        return id != null && Objects.equals(id, author.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

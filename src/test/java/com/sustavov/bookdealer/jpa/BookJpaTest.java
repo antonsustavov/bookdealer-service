@@ -4,24 +4,25 @@ import com.sustavov.bookdealer.model.Author;
 import com.sustavov.bookdealer.model.Book;
 import com.sustavov.bookdealer.repository.AuthorRepository;
 import com.sustavov.bookdealer.repository.BookRepository;
+import com.sustavov.bookdealer.util.SortedDirectionUtil;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@DisplayName("Author - Data JPA Tests")
 public class BookJpaTest {
-    @Autowired
-    private TestEntityManager entityManager;
-
     @Autowired
     BookRepository bookRepository;
     @Autowired
@@ -29,39 +30,40 @@ public class BookJpaTest {
 
     @Test
     public void shouldGetEmptyBook() {
-        List<Book> books = bookRepository.findAll();
+        var books = bookRepository.findAll();
 
         assertThat(books).isEmpty();
     }
 
     @Test
     public void shouldCreateBook() {
-        Author testAuthor = createAuthor();
-        Author author = authorRepository.save(testAuthor);
-        Book thirdBook = createBook("thirdBook", "978-3-16-148410-0");
+        var testAuthor = createAuthor();
+        var author = authorRepository.save(testAuthor);
+        var thirdBook = createBook("thirdBook", "978-3-16-148410-0");
         thirdBook.setAuthor(author);
-        Book savedBook = bookRepository.save(thirdBook);
 
-        List<Book> allBook = bookRepository.findAll();
+        bookRepository.save(thirdBook);
+
+        var allBook = bookRepository.findAll();
 
         assertThat(allBook.size()).isEqualTo(3);
     }
 
     @Test
     public void shouldUpdateBook() {
-        Author testAuthor = createAuthor();
-        Author author = authorRepository.save(testAuthor);
+        var testAuthor = createAuthor();
+        var author = authorRepository.save(testAuthor);
 
-        Optional<Book> byId = bookRepository.findById(1L);
+        var findBookById = bookRepository.findById(1L);
 
-        assertThat(byId).isNotEmpty();
+        assertThat(findBookById).isNotEmpty();
 
-        Book findBook = byId.get();
+        var findBook = findBookById.get();
         findBook.setTitle("new title");
 
-        Book actualBook = bookRepository.save(findBook);
+        bookRepository.save(findBook);
 
-        Optional<Author> actualAuthor = authorRepository.findById(author.getId());
+        var actualAuthor = authorRepository.findById(author.getId());
 
         assertThat(actualAuthor).isNotEmpty();
         assertThat(actualAuthor.get().getBooks().size()).isEqualTo(2);
@@ -69,47 +71,58 @@ public class BookJpaTest {
 
     @Test
     public void shouldDeleteBook() {
-        Author testAuthor = createAuthor();
-        Author author = entityManager.persist(testAuthor);
+        var testAuthor = createAuthor();
+        var author = authorRepository.save(testAuthor);
 
-        Book book = new Book();
-        book.setTitle("ffff");
-        book.setIsbn("ffff");
-        book.setPrice(BigDecimal.valueOf(1));
+        var book = createBook("title", "isbn");
         book.setAuthor(author);
 
-        entityManager.persist(book);
+        bookRepository.save(book);
 
-        List<Book> beforeDelete = bookRepository.findAll();
+        var beforeDelete = bookRepository.findAll();
 
         assertThat(beforeDelete.size()).isEqualTo(3);
 
         bookRepository.deleteById(book.getId());
 
-        List<Book> afterDelete = bookRepository.findAll();
+        var afterDelete = bookRepository.findAll();
 
         assertThat(afterDelete.size()).isEqualTo(2);
     }
 
     @Test
     public void shouldFindBookByAuthor() {
-        Author testAuthor = createAuthor();
-        Author author = entityManager.persist(testAuthor);
+        var testAuthor = createAuthor();
+        var author = authorRepository.save(testAuthor);
 
-        List<Book> booksByAuthor = bookRepository.findBooksByAuthor(author);
+        var booksByAuthor = bookRepository.findBooksByAuthor(author);
 
         assertThat(booksByAuthor.size()).isEqualTo(2);
     }
 
-    private Book changeBook(Book book) {
-        book.setTitle("newtitle");
-        return book;
+    @Test
+    public void shouldFindByFirstNameContaining() {
+        var testAuthor = createAuthor();
+        var savedAuthor = authorRepository.save(testAuthor);
+
+        var isbn = "888-987-567-890-1";
+        var book = createBook("title", isbn);
+        book.setAuthor(savedAuthor);
+
+        bookRepository.save(book);
+
+        String[] sort = {"id", "desc"};
+        List<Sort.Order> orders = SortedDirectionUtil.getOrders(sort);
+        Pageable pagingSort = PageRequest.of(0, 2, Sort.by(orders));
+        var actualBooks = bookRepository.findByIsbnContaining(isbn, pagingSort);
+
+        assertThat(actualBooks.getContent().size()).isEqualTo(1);
     }
 
     private Author createAuthor() {
         Book the_lord_of_the_rings = createBook("The Lord of the Rings", "978-3-16-148410-0");
         Book the_count_of_monte_cristo = createBook("The Count of Monte Cristo", "978-3-16-148410-0");
-        Author author = new Author();
+        var author = new Author();
         author.setFirstName("firstName");
         author.setLastName("lastName");
         author.setDateOfBirth(LocalDate.of(2021, 2, 2));
@@ -119,12 +132,11 @@ public class BookJpaTest {
     }
 
     private Book createBook(String title, String isbn) {
-        Book book = new Book();
-        book.setTitle(title);
-        book.setIsbn(isbn);
-        book.setPrice(BigDecimal.valueOf(12.6));
-        book.setPublicationDate(LocalDate.of(1970, 2, 2));
-
-        return book;
+        return Book.builder()
+                .title(title)
+                .isbn(isbn)
+                .price(BigDecimal.valueOf(12.6))
+                .publicationDate(LocalDate.of(1970, 2, 2))
+                .build();
     }
 }

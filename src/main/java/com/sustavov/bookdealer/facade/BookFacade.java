@@ -58,13 +58,12 @@ public class BookFacade {
     }
 
     private Book toBook(BookRequest bookRequest, Author author) {
-        Book newBook = new Book();
-        newBook.setTitle(bookRequest.getTitle());
-        newBook.setIsbn(bookRequest.getIsbn());
-        newBook.setPublicationDate(bookRequest.getPublicationDate());
-        newBook.setPrice(bookRequest.getPrice());
-        newBook.setAuthor(author);
-
-        return newBook;
+        return Book.builder()
+                .title(bookRequest.getTitle())
+                .isbn(bookRequest.getIsbn())
+                .publicationDate(bookRequest.getPublicationDate())
+                .price(bookRequest.getPrice())
+                .author(author)
+                .build();
     }
 }

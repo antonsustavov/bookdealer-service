@@ -1,7 +1,10 @@
 package com.sustavov.bookdealer.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sustavov.bookdealer.model.Author;
 import com.sustavov.bookdealer.model.Book;
+import lombok.Builder;
+import lombok.Value;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -9,62 +12,25 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Value
+@Builder(toBuilder = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AuthorResponse {
     Long id;
     String firstName;
     String lastName;
     LocalDate dateOfBirth;
+    @Builder.Default
     Set<Book> books = new HashSet<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public Set<Book> getBooks() {
-        return books;
-    }
-
-    public void setBooks(Set<Book> books) {
-        this.books = books;
-    }
-
     public static AuthorResponse from(Author author) {
-        AuthorResponse authorResponse = new AuthorResponse();
-        authorResponse.setId(author.getId());
-        authorResponse.setFirstName(author.getFirstName());
-        authorResponse.setLastName(author.getLastName());
-        authorResponse.setDateOfBirth(author.getDateOfBirth());
-        authorResponse.setBooks(author.getBooks());
-
-        return authorResponse;
+        return AuthorResponse.builder()
+                .id(author.getId())
+                .firstName(author.getFirstName())
+                .lastName(author.getLastName())
+                .dateOfBirth(author.getDateOfBirth())
+                .books(author.getBooks())
+                .build();
     }
 
     public static List<AuthorResponse> fromList(List<Author> authors) {

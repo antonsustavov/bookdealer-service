@@ -1,6 +1,8 @@
 package com.sustavov.bookdealer.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sustavov.bookdealer.repository.AuthorRepository;
+import com.sustavov.bookdealer.repository.BookRepository;
 import com.sustavov.bookdealer.repository.RoleRepository;
 import com.sustavov.bookdealer.repository.UserRepository;
 import com.sustavov.bookdealer.security.JwtUtils;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -34,7 +37,6 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @AutoConfigureWireMock(port = 0)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class BaseIntegrationTest {
-
     @Autowired
     protected BookService bookService;
     @Autowired
@@ -55,6 +57,12 @@ public class BaseIntegrationTest {
     protected PasswordEncoder encoder;
     @Autowired
     protected SessionFactory sessionFactory;
+    @Autowired
+    protected CacheManager cacheManager;
+    @Autowired
+    protected AuthorRepository authorRepository;
+    @Autowired
+    protected BookRepository bookRepository;
 
     protected MockMvc mvc;
 
@@ -72,6 +80,9 @@ public class BaseIntegrationTest {
         assertThat(bookService).isNotNull();
         assertThat(authorService).isNotNull();
         assertThat(mvc).isNotNull();
+        assertThat(context).isNotNull();
+        assertThat(authenticationManager).isNotNull();
+        assertThat(cacheManager).isNotNull();
     }
 
 }
