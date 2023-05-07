@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,10 +23,12 @@ import static com.sustavov.bookdealer.util.SortedDirectionUtil.getOrders;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthorService {
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
 
+    @Transactional
     public Author create(Author author) {
         return authorRepository.save(author);
     }
@@ -40,6 +43,7 @@ public class AuthorService {
                 .orElseThrow(() -> new AuthorNotFoundException("Author not found"));
     }
 
+    @Transactional
     @CachePut(value = SpringCashName.AUTHORS_ID, key = "#id")
     public Author update(Long id, Author author) {
         Author currentAuthor = getById(id);
@@ -49,6 +53,7 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
+    @Transactional
     @CacheEvict(value = SpringCashName.AUTHORS_ID, key = "#id")
     public void delete(Long id) {
         authorRepository.deleteById(id);
