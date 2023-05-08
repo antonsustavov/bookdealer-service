@@ -18,17 +18,17 @@ public class BookFacade {
     private final AuthorService authorService;
 
     public BookResponse create(BookRequest bookRequest) {
-        Author author = authorService.getById(bookRequest.getAuthorId());
+        var author = authorService.getReferenceById(bookRequest.getAuthorId());
 
         var newBook = toBook(bookRequest, author);
 
-        Book createdBook = bookService.create(newBook);
+        var createdBook = bookService.create(newBook);
 
         return BookResponse.from(createdBook);
     }
 
     public List<BookResponse> getAll() {
-        List<Book> all = bookService.getAll();
+        var all = bookService.getAll();
 
         return BookResponse.fromList(all);
     }

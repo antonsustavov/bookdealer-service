@@ -39,7 +39,7 @@ class BookFacadeTest {
         var author = createAuthor(1L);
         var book = createBook(author);
 
-        when(authorService.getById(1L)).thenReturn(author);
+        when(authorService.getReferenceById(1L)).thenReturn(author);
         when(bookService.create(any(Book.class))).thenReturn(book);
 
         var actual = bookFacade.create(bookRequest);

@@ -79,4 +79,8 @@ public class AuthorService {
         return authors.getContent();
     }
 
+    @Cacheable(value = SpringCashName.AUTHORS_ID, key = "#id")
+    public Author getReferenceById(Long id) {
+        return authorRepository.getReferenceById(id);
+    }
 }

@@ -1,7 +1,6 @@
 package com.sustavov.bookdealer.facade;
 
 import com.sustavov.bookdealer.model.Author;
-import com.sustavov.bookdealer.model.Book;
 import com.sustavov.bookdealer.model.request.AuthorRequest;
 import com.sustavov.bookdealer.model.response.AuthorResponse;
 import com.sustavov.bookdealer.model.response.BookResponse;
@@ -19,19 +18,19 @@ public class AuthorFacade {
     public AuthorResponse create(AuthorRequest authorRequest) {
         var newAuthor = toAuthor(authorRequest);
 
-        Author saved = authorService.create(newAuthor);
+        var saved = authorService.create(newAuthor);
 
         return AuthorResponse.from(saved);
     }
 
     public List<AuthorResponse> getAll() {
-        List<Author> allAuthors = authorService.getAll();
+        var allAuthors = authorService.getAll();
 
         return AuthorResponse.fromList(allAuthors);
     }
 
     public AuthorResponse getById(Long id) {
-        Author author = authorService.getById(id);
+        var author = authorService.getById(id);
 
         return AuthorResponse.from(author);
     }
@@ -49,7 +48,7 @@ public class AuthorFacade {
     }
 
     public List<BookResponse> getByAuthor(Long id) {
-        List<Book> books = authorService.getByAuthor(id);
+        var books = authorService.getByAuthor(id);
 
         return BookResponse.fromList(books);
     }
